@@ -133,6 +133,7 @@ public class Transfer implements Runnable {
         Socket socket = serverSocket.accept();
         // Close welcome socket as it is no longer needed
         serverSocket.close();
+        socket.close();
         // Return connection socket
         return socket;
     }

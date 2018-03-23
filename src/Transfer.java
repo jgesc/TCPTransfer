@@ -130,9 +130,15 @@ public class Transfer implements Runnable {
         // Wait for connection
         serverSocket.setSoTimeout(timeout);
         serverSocket.setReuseAddress(true);
-        Socket socket = serverSocket.accept();
-        // Close welcome socket as it is no longer needed
-        serverSocket.close();
+        Socket socket;
+        try {
+            socket = serverSocket.accept();
+        }
+        finally {
+          // Close welcome socket as it is no longer needed
+          serverSocket.close();
+        }
+
         // Return connection socket
         return socket;
     }

@@ -27,6 +27,9 @@ public class TcpTransferUI {
         mainFrame.setVisible(true);
         mainFrame.setResizable(false);
 
+        // Get inets to calculate positions
+        Insets insets = mainFrame.getInsets();
+
         // Register closing method
         mainFrame.addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent we) {
@@ -37,56 +40,56 @@ public class TcpTransferUI {
 
         // File label
         fileLabel = new Label("File:");
-        fileLabel.setBounds(0, 0, 300, 20);
+        fileLabel.setBounds(insets.left, insets.top, 300 - insets.right - insets.left, 20);
         mainFrame.add(fileLabel);
 
         // File field
         fileField = new TextField();
-        fileField.setBounds(0, 20, 300, 20);
+        fileField.setBounds(insets.left, insets.top + 20, 300 - insets.right - insets.left, 20);
         mainFrame.add(fileField);
 
         // Address label
         addressLabel = new Label("Address:");
-        addressLabel.setBounds(0, 40, 250, 20);
+        addressLabel.setBounds(insets.left, insets.top + 40, 250 - insets.left, 20);
         mainFrame.add(addressLabel);
 
         // Address field
         addressField = new TextField();
-        addressField.setBounds(0, 60, 250, 20);
+        addressField.setBounds(insets.left, insets.top + 60, 250 - insets.left, 20);
         mainFrame.add(addressField);
 
         // Port label
         portLabel = new Label("Port:");
-        portLabel.setBounds(250, 40, 50, 20);
+        portLabel.setBounds(250, insets.top + 40, 50, 20);
         mainFrame.add(portLabel);
 
         // Port field
         portField = new TextField();
-        portField.setBounds(250, 60, 50, 20);
+        portField.setBounds(250, insets.top + 60, 45, 20);
         mainFrame.add(portField);
 
         // Mode label
         modeLabel = new Label("Mode:");
-        modeLabel.setBounds(0, 90, 200, 20);
+        modeLabel.setBounds(insets.left, insets.top + 90, 200 - insets.left, 20);
         mainFrame.add(modeLabel);
 
         // Host label
         hostLabel = new Label("Is host?:");
-        hostLabel.setBounds(200, 90, 100, 20);
+        hostLabel.setBounds(200, insets.top + 90, 100, 20);
         mainFrame.add(hostLabel);
 
         // Mode checkboxes
         modeGroup = new CheckboxGroup();
         sendCheckbox = new Checkbox("Send", modeGroup, true);
         receiveCheckbox = new Checkbox("Receive", modeGroup, false);
-        sendCheckbox.setBounds(0, 100, 100, 40);
-        receiveCheckbox.setBounds(100, 100, 100, 40);
+        sendCheckbox.setBounds(insets.left, insets.top + 100, 100 - insets.left, 40);
+        receiveCheckbox.setBounds(100, insets.top + 100, 100, 40);
         mainFrame.add(sendCheckbox);
         mainFrame.add(receiveCheckbox);
 
         // Host checkbox
         hostCheckbox = new Checkbox("Host", false);
-        hostCheckbox.setBounds(200, 100, 100, 40);
+        hostCheckbox.setBounds(200, insets.top + 100, 100, 40);
         mainFrame.add(hostCheckbox);
 
         // Host checkbox event register
@@ -100,18 +103,18 @@ public class TcpTransferUI {
 
         // Transfer button
         transferButton = new Button("Transfer");
-        transferButton.setBounds(0, 140, 300, 20);
+        transferButton.setBounds(insets.left, insets.top + 140, 300 - insets.right - insets.left, 20);
         mainFrame.add(transferButton);
 
         // Output label
         outputLabel = new Label("Output:");
-        outputLabel.setBounds(0, 160, 300, 20);
+        outputLabel.setBounds(insets.left, insets.top + 160, 300 - insets.right - insets.left, 20);
         mainFrame.add(outputLabel);
 
         // Output area
         outputArea = new TextArea();
         outputArea.setEditable(false);
-        outputArea.setBounds(0, 180, 300, 120);
+        outputArea.setBounds(insets.left, insets.top + 180, 300 - insets.right - insets.left, 300 - insets.top - 180 - insets.bottom);
         mainFrame.add(outputArea);
 
         // Register button event
@@ -130,8 +133,8 @@ public class TcpTransferUI {
                     String[] arguments = new String[argumentCount];
                     arguments[0] = file;
                     arguments[1] = port;
-                    if(argumentCount > 2) arguments[2] = isHost ? "s" : address;
-                    if(argumentCount > 3) arguments[3] = "s";
+                    if(argumentCount > 2) arguments[2] = isHost ? "-s" : address;
+                    if(argumentCount > 3) arguments[3] = "-s";
 
                     Transfer transfer = new Transfer(arguments, TcpTransferUI.this);
                     lock();

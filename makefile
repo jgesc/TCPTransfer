@@ -6,5 +6,5 @@ make:
 
 .PHONY: clean
 clean:
-	rm -r tcptransfer
-	rm TCPTransfer.jar
+	-rm -r tcptransfer
+	-rm TCPTransfer.jar

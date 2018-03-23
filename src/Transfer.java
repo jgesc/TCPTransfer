@@ -2,6 +2,7 @@ package tcptransfer;
 
 import java.io.*;
 import java.net.*;
+import java.nio.file.FileAlreadyExistsException;
 
 /* Transfer class
  * Handles the transference
@@ -39,14 +40,14 @@ public class Transfer implements Runnable {
         // Parse optional arguments
         if(args.length > 2) {
             if(args.length > 3) {
-                // Check the 4rd argument is 's'
-                if(args[3].equals("s")) isSender = true;
+                // Check the 4rd argument is '-s'
+                if(args[3].equals("-s")) isSender = true;
                 else argumentError();
                 // Save address
                 address = InetAddress.getByName(args[2]);
             }
             else {
-                if(args[2].equals("s")) {
+                if(args[2].equals("-s")) {
                     isSender = true;
                 }
                 else {
@@ -61,18 +62,19 @@ public class Transfer implements Runnable {
 
     // Prints corect argument usage
     static void argumentError() {
-        Main.print("Arguments: fileName port [address] [s]");
+        Main.print("Arguments: fileName port [address] [-s]");
         System.exit(0);
     }
 
     // Transference process
     public void startTransference(File file, int port, boolean isSender, InetAddress address)
-    throws FileNotFoundException, SocketException, UnknownHostException, IOException
+    throws FileNotFoundException, SocketException, UnknownHostException, IOException, FileAlreadyExistsException
     {
         // Is in host mode?
         boolean isHost = (address == null);
         // Check if file to be sent exists and is not a directory
         if(isSender && (!file.exists() || file.isDirectory())) throw new FileNotFoundException();
+        if(!isSender && file.exists()) throw new FileAlreadyExistsException("Output file alreay exists");
         if(isHost) {
             Main.print("Waiting for incoming connections...");
         }
@@ -95,11 +97,13 @@ public class Transfer implements Runnable {
 
         // Set values to streams
         if(isSender) {
+            socket.shutdownInput();
             fileStream = new FileInputStream(file);
             in = (FileInputStream)fileStream;
             out = socket.getOutputStream();
         }
         else {
+            socket.shutdownOutput();
             fileStream = new FileOutputStream(file);
             in = socket.getInputStream();
             out = (FileOutputStream)fileStream;
@@ -125,9 +129,11 @@ public class Transfer implements Runnable {
         ServerSocket serverSocket = new ServerSocket(port);
         // Wait for connection
         serverSocket.setSoTimeout(timeout);
+        serverSocket.setReuseAddress(true);
         Socket socket = serverSocket.accept();
         // Close welcome socket as it is no longer needed
         serverSocket.close();
+        socket.close();
         // Return connection socket
         return socket;
     }
